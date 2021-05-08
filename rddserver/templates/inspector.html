@@ -1,0 +1,23 @@
+{% extends "layouts/admin-base.html" %}
+
+{% block userContent %}
+    <form action="/issue/forward" method="post">
+        <input type="hidden" name="id" value="{{ issue.id }}">
+        <button type="submit" class="btn btn-success btn-block mb-2">Forward Issue</button>
+    </form>
+    <form action="/issue/decline" method="post">
+        <input type="hidden" name="id" value="{{ issue.id }}">
+        <button type="submit" class="btn btn-danger btn-block mb-2">Decline Issue</button>
+    </form>
+    <a class="btnLocationModal btn btn-dark text-white btn-block" data-toggle="modal" data-target="#mapModal"
+    data-latitude="{{ issue.location.split(',')[0] }}"
+    data-longitude="{{ issue.location.split(',')[1] }}"><i class="fa fa-location"></i>Location
+    Information</a>
+{% endblock %}
+
+{% block next_link %}
+href="{{ url_for('admin', page=issues.next_num) }}"
+{% endblock %}
+{% block prev_link %}
+href="{{ url_for('admin', page=issues.prev_num) }}"
+{% endblock %}

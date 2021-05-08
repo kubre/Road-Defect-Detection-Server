@@ -1,0 +1,16 @@
+{% extends "layouts/admin-base.html" %}
+
+{% block userContent %}
+    <form class="" action="/issue/accpet" method="post">
+        <input type="hidden" name="id" value="{{ issue.id }}">
+        <button type="submit" class="btn btn-success btn-block mb-2">Start Working</button>
+    </form>
+    <!-- <form class="btn-block" action="/issue/decline" method="post">
+        <input type="hidden" name="id" value="{{ issue.id }}">
+        <button type="submit" class="btn btn-danger btn-block">Decline Issue</button>
+    </form> -->
+    <a class="btnLocationModal btn btn-dark text-white btn-block" data-toggle="modal" data-target="#mapModal"
+        data-latitude="{{ issue.location.split(',')[0] }}" data-longitude="{{ issue.location.split(',')[1] }}"><i
+            class="fa fa-location"></i>Location
+        Information</a>
+{% endblock %}

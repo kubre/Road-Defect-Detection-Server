@@ -1,0 +1,30 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div id="map" style="height: 500px; width: 100%"></div>
+{% endblock %}
+
+{% block script %}
+<script>
+    $(function () {
+        var map = L.map('map').setView([{{ latitude }}, {{ longitude }}], 15);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        var marker = L.marker([{{ latitude }}, {{ longitude }}]).addTo(map);
+
+        $.get("https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?location=" +
+            {{ longitude }} + "," +
+            {{ latitude }} +
+            "&langCode=en&outSR=&forStorage=false&f=json&featureTypes=StreetInt",
+            function (add) {
+                console.log(add);
+                marker
+                    .bindPopup(add.address.Match_addr)
+                    .openPopup();
+            });
+    });
+</script>
+{% endblock %}

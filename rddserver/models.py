@@ -1,6 +1,7 @@
 from datetime import datetime
-
-from rddserver import db, ma
+from flask import url_for
+from marshmallow import fields
+from rddserver import db, ma, app
 
 
 class User(db.Model):
@@ -32,22 +33,15 @@ class Issue(db.Model):
     status = db.Column(db.String(3), default=STATUS_INSPECTOR, nullable=False)
     date = db.Column(db.DateTime, default=datetime.utcnow)
 
-    def __init__(self, name, mobile, details, location, photo, status, date):
-        self.name = name
-        self.mobile = mobile
-        self.details = details
-        self.location = location
-        self.photo = photo
-        self.status = status
-        self.date = date  
-
     def __repr__(self):
         return f"<Complain {self.name}, {self.details}>, {self.date}"
 
 # Schema Classes
 class IssueSchema(ma.Schema):
+    photo = fields.Function(lambda obj: url_for('static', filename=f"uploads/{obj.photo}"))
+    date= fields.Function(lambda obj: f"{obj.date:%d, %b %Y}")
     class Meta:
-        fields = ('id', 'name', 'mobile', 'details', 'location', 'photo', 'status', 'date')
+        fields = ('id', 'name', 'mobile', 'details', 'location', 'photo' ,'status', 'date')
 
 
 # Schema variables 

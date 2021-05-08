@@ -1,0 +1,108 @@
+{% extends "layouts/dashboard.html" %}
+
+{% block adminContent %}
+<div class="container">
+    <div class="row">
+        {% if issues.items | length == 0 %}
+        <h2>No Issues are reportted.</h2>
+        {% endif %}
+        {% for issue in issues.items %}
+        <div class="col-4 mb-5">
+            <div class="card" style="width: 100%;">
+                <img style="height: 300px" src="{{ url_for('static', filename='uploads/{}'.format(issue.photo)) }}"
+                    class="card-img-top">
+                <div class="card-body">
+                    <small>Reported by (on {{ issue.date.strftime("%d, %b %Y") }}): </small>
+                    <h5 class="card-title">{{ issue.name }}({{ issue.mobile }})</h5>
+                    <p class="card-text">{{ issue.details }}</p>
+                    <div>
+                        {% block userContent scoped %}
+                        {% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <nav class="mb-5">
+        <ul class="pagination">
+
+            <li class="page-item">
+                {% if issues.has_prev %}
+                <a class="page-link bg-dark text-white"
+                {% block prev_link %}{% endblock %}>
+                    <i class="fas fa-chevron-left"></i>&nbsp; Newer Issues
+                </a>
+                {% else %}
+                <a class="btn disabled page-link" disabled href="#">
+                    Newer Issues
+                </a>
+                {% endif %}
+            </li>
+            <li class="page-item">
+                {% if issues.has_next %}
+                <a class="page-link bg-dark text-white"
+                {% block next_link %}{% endblock %}>
+                    Older Issues <i class="fas fa-chevron-right"></i>&nbsp;
+                </a>
+                {% else %}
+                <a class="btn disabled page-link" href="#">
+                    Older Issues
+                </a>
+                {% endif %}
+            </li>
+        </ul>
+    </nav>
+</div>
+<nav class="py-1" style="position: fixed; bottom: 0; right: 0; left: 0; background: #fff; text-align: center; border-top: 1px solid rgba(33,33,33, 0.18);">
+    Road Defect Detection with Python
+</nav>
+<!-- Map Modal-->
+<div class="modal fade" id="mapModal" tabindex="-1" role="dialog" aria-labelledby="mapModal" aria-hidden="true">
+    <div class="modal-dialog" style="margin-left: calc(50% - 450px);" role="document">
+        <div class="modal-content" style="width: 900px; margin: 10px auto;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="mapModalLabel">Location Information</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body" id="mapModalBody">
+
+            </div>
+            <div class="modal-footer">
+                <p id="modalAddress"></p>
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    $(function () {
+        $('.btnLocationModal').click(function () {
+            
+            $("#mapModalBody").html('<div id="map" style="height: 500px; width: 100%;"></div>');
+            var map = L.map('map').setView([$(this).data('latitude'), $(this).data('longitude')], 15);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            var marker = L.marker([$(this).data('latitude'), $(this).data('longitude')]).addTo(map);
+
+            $.get("https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?location=" +
+                $(this).data('longitude') + "," +
+                $(this).data('latitude') +
+                "&langCode=en&outSR=&forStorage=false&f=json&featureTypes=StreetInt",
+                function (add) {
+                    marker
+                        .bindPopup(add.address.Match_addr)
+                        .openPopup();
+                });
+        })
+    })
+</script>
+{% endblock %}

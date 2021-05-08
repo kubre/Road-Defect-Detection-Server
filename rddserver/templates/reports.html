@@ -1,0 +1,24 @@
+{% extends "layouts/admin-base.html" %}
+
+{% block userContent %}
+{% endblock %}
+
+{% block next_link %}
+{% if (request.url_rule | string()) == url_for('reports_forwarded') %}
+    href="{{ url_for('reports_forwarded', page=issues.next_num) }}"
+{% elif (request.url_rule | string()) == url_for('reports_wip') %}
+    href="{{ url_for('reports_wip', page=issues.next_num) }}"
+{% elif (request.url_rule | string()) == url_for('reports_declined') %}
+    href="{{ url_for('reports_declined', page=issues.next_num) }}"
+{% endif %}
+{% endblock %}
+
+{% block prev_link %}
+{% if (request.url_rule | string()) == url_for('reports_forwarded') %}
+    href="{{ url_for('reports_forwarded', page=issues.prev_num) }}"
+{% elif (request.url_rule | string()) == url_for('reports_wip') %}
+    href="{{ url_for('reports_wip', page=issues.prev_num) }}"
+{% elif (request.url_rule | string()) == url_for('reports_declined') %}
+    href="{{ url_for('reports_declined', page=issues.prev_num) }}"
+{% endif %}
+{% endblock %}
