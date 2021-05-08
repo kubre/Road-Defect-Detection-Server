@@ -32,4 +32,4 @@ As when Roads are constructed government delegates this task top private constru
 
 
 ## Please checkout the Client App for android too:
- - [Road Defect Detection Client GitHub](https://github.com/kubre/RDD-Client)
+ - [Road Defect Detection Client GitHub](https://github.com/kubre/Road-Defect-Detection-Client)
